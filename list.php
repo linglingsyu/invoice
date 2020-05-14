@@ -28,8 +28,9 @@ if(isset($_GET['period'])){
     <li><a href="list.php?period=6" style="background-color:<?= ($period==6)? 'lightgreen' :'white' ;?>">6(11,12)</a></li>
 </ul>
 <?php
-$sql = "select * from invoice where period = '$period'";
-$rows = $pdo->query($sql)->fetchAll();
+// $sql = "select * from invoice where period = '$period'";
+// $rows = $pdo->query($sql)->fetchAll();
+
 ?>
 <table>
     <tr>
