@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,77 +8,114 @@
     <title>統一發票管理系統</title>
     <link rel="stylesheet" href="/CSS/style.css">
 </head>
-
 <body>
-    <?php include "./include/header.php"; ?>
+    <?php 
+    include_once "./com/base.php";
+    include "./include/header.php";
+    //n	数字表示的月份，没有前導零
+    $period = ceil(date("n")/2);
+    $monthStr=[
+        '1'=>"1,2月",
+        '2'=>"3,4月",
+        '3'=>"5,6月",
+        '4'=>"7,8月",
+        '5'=>"9,10月",
+        '6'=>"11,12月",
+    ];
+    if(isset($_GET['period'])){
+        $period = $_GET['period'];
 
-
+    }
+    $year = date("Y");
+    
+    ?>
+    <h1>期別</h1>
+<ul class="nav">
+    <li><a href="invoice.php?period=1" style="background-color:<?= ($period==1)? 'lightgreen' :'white' ;?>">1(1,2)</a></li>
+    <li><a href="invoice.php?period=2" style="background-color:<?= ($period==2)? 'lightgreen' :'white' ;?>">2(3,4)</a></li>
+    <li><a href="invoice.php?period=3" style="background-color:<?= ($period==3)? 'lightgreen' :'white' ;?>">3(5,6)</a></li>
+    <li><a href="invoice.php?period=4" style="background-color:<?= ($period==4)? 'lightgreen' :'white' ;?>">4(7,8)</a></li>
+    <li><a href="invoice.php?period=5" style="background-color:<?= ($period==5)? 'lightgreen' :'white' ;?>">5(9,10)</a></li>
+    <li><a href="invoice.php?period=6" style="background-color:<?= ($period==6)? 'lightgreen' :'white' ;?>">6(11,12)</a></li>
+</ul>
     <a href="add_invoice.php"><button>新增獎號</button></a>
-<form action="save_num.php">
+<?php
+//$num為陣列
+    $num1 = find('award_number',['period'=>$period,'year'=>$year,'type'=>1]); //單筆
+    $num2 = find('award_number',['period'=>$period,'year'=>$year,'type'=>2]); //單筆
+    $num3 = all('award_number',['period'=>$period,'year'=>$year,'type'=>3]); //多筆
+    $num4 = all('award_number',['period'=>$period,'year'=>$year,'type'=>4]); //多筆
+?>
+
     <table class="invoice-table">
         <tr>
             <td>年月份</td>
-            <td>
-                
-                <input type="text" name="year" id="">年
-                <select name="period" id="">
-                    <option value="1">1,2月</option>
-                    <option value="2">3,4月</option>
-                    <option value="3">5,6月</option>
-                    <option value="4">7,8月</option>
-                    <option value="5">9,10月</option>
-                    <option value="6">11,12月</option>
-                </select>
-
-
+            <td>  
+               <?=$year;?>年<?=$monthStr[$period];?>
             </td>
         </tr>
         <tr>
             <td>特別獎</td>
-            <td><input type="text" name="num"></td>
+            <td><?php  
+            if(!empty($num1['number'])){
+                echo $num1['number'];
+            }?></td>
+            <td><a href="award.php?aw=1&year=<?=$year;?>&period=<?=$period;?>">對獎</a></td>
         </tr>
         <tr>
             <td>特獎</td>
-            <td><input type="text" name="num2"></td>
+            <td><?php  
+            if(!empty($num2['number'])){
+                echo $num2['number'];
+            }?></td>
+            <td><a href="award.php?aw=2&year=<?=$year;?>&period=<?=$period;?>">對獎</a></td>
         </tr>
         <tr>
             <td>頭獎</td>
-            <td>
-                <input type="text" name="num3[]">
-                <input type="text" name="num3[]">
-                <input type="text" name="num3[]">
-            </td>
+            <td><?php
+            foreach($num3 as $num){
+                echo $num['number'] . "<br>";
+            }
+            ?></td>
+            <td><a href="award.php?aw=3&year=<?=$year;?>&period=<?=$period;?>">對獎</a></td>
         </tr>
         <tr>
             <td>二獎</td>
             <td></td>
+            <td><a href="award.php?aw=4&year=<?=$year;?>&period=<?=$period;?>">對獎</a></td>
         </tr>
         <tr>
             <td>參獎</td>
             <td></td>
+            <td><a href="award.php?aw=5&year=<?=$year;?>&period=<?=$period;?>">對獎</a></td>
         </tr>
         <tr>
             <td>四獎</td>
             <td></td>
+            <td><a href="award.php?aw=6&year=<?=$year;?>&period=<?=$period;?>">對獎</a></td>
         </tr>
         <tr>
             <td>五獎</td>
             <td></td>
+            <td><a href="award.php?aw=7&year=<?=$year;?>&period=<?=$period;?>">對獎</a></td>
         </tr>
         <tr>
             <td>六獎</td>
             <td></td>
+            <td><a href="award.php?aw=8&year=<?=$year;?>&period=<?=$period;?>">對獎</a></td>
         </tr>
         <tr>
             <td>增開六獎</td>
             <td>
-            <input type="text" name="num4[]">
-            <input type="text" name="num4[]">
+            <?php
+            foreach($num4 as $num){
+                echo $num['number']  . "<br>";
+            }
+            ?>
             </td>
+            <td><a href="award.php?aw=9&year=<?=$year;?>&period=<?=$period;?>">對獎</a></td>
         </tr>
     </table>
-    <input type="submit" value="送出">
-</form>
 
 
 </body>
